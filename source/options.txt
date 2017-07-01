@@ -1,0 +1,4 @@
+Select Time (ms):
+1000
+Animation Time (ms):
+250
