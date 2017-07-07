@@ -17,12 +17,12 @@ class Predictor
 	string freqPredict(string word1, string word2);
 	bool tryLoadingTries();
 public:
-	Predictor ();
-	~Predictor ();
+	Predictor();
+	~Predictor();
 	string Predict(string word1, string word2);
 };
 
-Predictor::Predictor ()
+Predictor::Predictor()
 {
 	if (!tryLoadingTries())
 	{
@@ -32,7 +32,7 @@ Predictor::Predictor ()
 	}
 }
 
-Predictor::~Predictor ()
+Predictor::~Predictor()
 {
 	delete uniGrams;
 	delete biGrams;
@@ -40,7 +40,7 @@ Predictor::~Predictor ()
 
 void Predictor::readTextCorpus()
 {
-	std::ifstream uniCorpusFile ("uniCorpus.txt");
+	std::ifstream uniCorpusFile("uniCorpus.txt");
 	vector<ValidChar> words;
 	string word;
 
@@ -62,11 +62,11 @@ void Predictor::readTextCorpus()
 
 	}
 
-	uniGrams = new Trie (words);
+	uniGrams = new Trie(words);
 
-	//
 
-	std::ifstream biCorpusFile ("biCorpus.txt");
+
+	std::ifstream biCorpusFile("biCorpus.txt");
 	words.clear();
 	string biWord;
 
@@ -85,10 +85,10 @@ void Predictor::readTextCorpus()
 		biCorpusFile >> word;
 		biCorpusFile >> biWord;
 
-		words.push_back(ValidChar(' ', word+" "+biWord, f));
+		words.push_back(ValidChar(' ', word + " " + biWord, f));
 	}
 
-	biGrams = new Trie (words);
+	biGrams = new Trie(words);
 }
 
 
@@ -119,40 +119,9 @@ string Predictor::Predict(string word1, string word2)
 
 		string resultStr;
 
-		resultStr = biPrediction.getString().substr(word1.size()+1,biPrediction.getString().size());
-
-		/*
-		this compares uni/bi gram predictions
-		if ((uniPrediction.getFreq()/(double)uniTotalFreq)>(biPrediction.getFreq()/(double)biTotalFreq))
-			resultStr = uniPrediction.getString();
-		else
-			resultStr = biPrediction.getString().substr(word1.size()+1,biPrediction.getString().size());*/
-
-		//don't know what this part is
-		//if (word2.size() == 1)
-		//	resultStr = biPrediction.getString().substr(word1.size()+1,biPrediction.getString().size());
+		resultStr = biPrediction.getString().substr(word1.size() + 1, biPrediction.getString().size());
 
 		return resultStr;
-
-		/*
-		this doesn't predict same word twice
-		bool alredyPredicted=true;
-		if ((uniPrediction.getString()==word2) && (resultStr!=word2))
-		{
-			alredyPredicted=false;
-			for (string::size_type i=1; i < word2.size (); i++)
-			{
-				if (freqPredict(word1,word2.substr(0,i))==word2)
-					alredyPredicted=true;
-			}
-		}
-
-		if (alredyPredicted)
-			return resultStr;
-		else
-			return word2;*/
-
-
 	}
 }
 
@@ -171,15 +140,15 @@ string Predictor::freqPredict(string word1, string word2)
 	*/
 
 
-	if ((uniPrediction.getFreq()/(double)uniTotalFreq)>(biPrediction.getFreq()/(double)biTotalFreq))
+	if ((uniPrediction.getFreq() / (double)uniTotalFreq) > (biPrediction.getFreq() / (double)biTotalFreq))
 		return uniPrediction.getString();
 	else
-		return biPrediction.getString().substr(word1.size()+1,biPrediction.getString().size());
+		return biPrediction.getString().substr(word1.size() + 1, biPrediction.getString().size());
 }
 
 bool Predictor::tryLoadingTries()
 {
-	std::ifstream inputFile ("uniTrie.txt");
+	std::ifstream inputFile("uniTrie.txt");
 
 	if (inputFile.is_open())
 	{

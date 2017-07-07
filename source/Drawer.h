@@ -22,23 +22,23 @@ class Drawer
 
 	void drawText(Button but, double countDouble, bool FadeIn, bool incPred);
 	void morphText(Button oldBut, Button newBut, kbState state, double morphDouble, bool incPred);
-	void setColor (colorTypes colorCode, float alpha);
+	void setColor(colorTypes colorCode, float alpha);
 	void convertPolartoCart(double angle, double radius, float &x, float &y);
-	void extractShapeParams (Button but, double &innerRad, double &outerRad, double &startAngle, double &stopAngle, double &sweepAngle);
-	double fanBetweenTwoAngles (double angle1, double angle2);
+	void extractShapeParams(Button but, double &innerRad, double &outerRad, double &startAngle, double &stopAngle, double &sweepAngle);
+	double fanBetweenTwoAngles(double angle1, double angle2);
 
 
-	void drawMorphingInnerButton (GLUquadric* obj,double startAngle1 , double startAngle2, double sweepAngle1, colorTypes color, double morphRatio);
-	void drawInnerButton (GLUquadric* obj, double startAngle, double sweepAngle, double fillRatio, colorTypes frontColor, colorTypes backColor, double alpha);
-	void drawFillingButton (GLUquadric* obj, double innerRad, double outerRad, double startAngle, double sweepAngle, double fillRatio, colorTypes frontColor);
-	void drawRegularButton (GLUquadric* obj, double innerRad, double outerRad, double startAngle, double sweepAngle, colorTypes frontColor, double alpha);
-	void updateButtonVectors (ButtonSet *newButtons, ButtonSet *oldButtons);
-	bool areButtonShapesSame (Button &but1, Button &but2);
+	void drawMorphingInnerButton(GLUquadric* obj, double startAngle1, double startAngle2, double sweepAngle1, colorTypes color, double morphRatio);
+	void drawInnerButton(GLUquadric* obj, double startAngle, double sweepAngle, double fillRatio, colorTypes frontColor, colorTypes backColor, double alpha);
+	void drawFillingButton(GLUquadric* obj, double innerRad, double outerRad, double startAngle, double sweepAngle, double fillRatio, colorTypes frontColor);
+	void drawRegularButton(GLUquadric* obj, double innerRad, double outerRad, double startAngle, double sweepAngle, colorTypes frontColor, double alpha);
+	void updateButtonVectors(ButtonSet *newButtons, ButtonSet *oldButtons);
+	bool areButtonShapesSame(Button &but1, Button &but2);
 	void drawBackground(GLUquadric* obj, kbState state, double countDouble, char currChar, string currWord);
 
 
 public:
-	void drawButtons (ButtonSet *newButtons, ButtonSet *oldButtons, kbState state, bool boolMorph, double countDouble, char currChar, string currentWord);
+	void drawButtons(ButtonSet *newButtons, ButtonSet *oldButtons, kbState state, bool boolMorph, double countDouble, char currChar, string currentWord);
 };
 
 void Drawer::drawButtons(ButtonSet *newButtons, ButtonSet *oldButtons, kbState state, bool boolMorph, double countDouble, char currChar, string currentWord)
@@ -51,51 +51,49 @@ void Drawer::drawButtons(ButtonSet *newButtons, ButtonSet *oldButtons, kbState s
 
 	if ((boolMorph) && (currChar != '\n') && (countDouble < limit))
 	{
-		int indexNew=-1;
+		int indexNew = -1;
 		bool skip = false;
 		for (int i = 0; i < newButtons->getButtons().size(); i++)
 		{
 			if (newButtons->getButtons()[i].getWriting().getChar() == currChar)
-				indexNew=i;
+				indexNew = i;
 		}
-		if (indexNew==-1)
+		if (indexNew == -1)
 			skip = true;
-		
+
 		if (!skip)
 		{
 			extractShapeParams(newButtons->getButtons()[indexNew], innerradi2, outerradi2, startAngle2, stopAngle2, sweepAngle2);
 
 			float newX, newY;
-			if ((innerradi2==0) && (sweepAngle2 == 360))
+			if ((innerradi2 == 0) && (sweepAngle2 == 360))
 			{
-				newX=0;
-				newY=0;
+				newX = 0;
+				newY = 0;
 			}
 			else
 			{
 				double radius = (outerradi2 + innerradi2) / 2;
 				double angle = startAngle2 + (sweepAngle2 / 2);
-				convertPolartoCart (angle, radius, newX, newY);
+				convertPolartoCart(angle, radius, newX, newY);
 			}
 
 			HWND tW = GetActiveWindow();
 			RECT rect;
 			GetWindowRect(tW, &rect);
 
-			//newX += (SCREEN_SIZE / 2 + 4);
-			//newY += (SCREEN_SIZE / 2 + 16);
 			newX += SCREEN_SIZE / 2;
 			newY += SCREEN_SIZE / 2;
 
 			//added to rectify resize bug
-			newX = (newX/SCREEN_SIZE)*(rect.right-rect.left-38);
-			newY = (newY/SCREEN_SIZE)*(rect.bottom-rect.top-16);
+			newX = (newX / SCREEN_SIZE)*(rect.right - rect.left - 38);
+			newY = (newY / SCREEN_SIZE)*(rect.bottom - rect.top - 16);
 			newX += 4;
 			newY += 16;
 			//added to rectify resize bug
 
-			newX+=rect.left;
-			newY+=rect.top;
+			newX += rect.left;
+			newY += rect.top;
 
 			POINT mPoint;
 			GetCursorPos(&mPoint);
@@ -111,20 +109,20 @@ void Drawer::drawButtons(ButtonSet *newButtons, ButtonSet *oldButtons, kbState s
 	//// mouse dislocation
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity ();
-	glTranslatef (SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
-	GLUquadric* obj = gluNewQuadric ();
+	glLoadIdentity();
+	glTranslatef(SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
+	GLUquadric* obj = gluNewQuadric();
 
-	
+
 
 	drawBackground(obj, state, countDouble, currChar, currentWord);
 
 	if (boolMorph)
 	{
 		if (countDouble == 0)
-			updateButtonVectors (newButtons, oldButtons);
+			updateButtonVectors(newButtons, oldButtons);
 
-		for (vector<Button>::size_type i = 0; i <butMorphNew.size(); i ++)
+		for (vector<Button>::size_type i = 0; i < butMorphNew.size(); i++)
 		{
 			extractShapeParams(butMorphOld[i], innerradi1, outerradi1, startAngle1, stopAngle1, sweepAngle1);
 			extractShapeParams(butMorphNew[i], innerradi2, outerradi2, startAngle2, stopAngle2, sweepAngle2);
@@ -142,9 +140,9 @@ void Drawer::drawButtons(ButtonSet *newButtons, ButtonSet *oldButtons, kbState s
 				innerRad = innerradi1 + (innerradi2 - innerradi1) * countDouble;
 				outerRad = outerradi1 + (outerradi2 - outerradi1) * countDouble;
 
-				double angleFan = fanBetweenTwoAngles (startAngle1, startAngle2);
+				double angleFan = fanBetweenTwoAngles(startAngle1, startAngle2);
 
-				if (startAngle1 < startAngle2)															
+				if (startAngle1 < startAngle2)
 				{
 					if (startAngle1 + 180 > startAngle2)
 					{
@@ -179,7 +177,7 @@ void Drawer::drawButtons(ButtonSet *newButtons, ButtonSet *oldButtons, kbState s
 			}
 		}
 
-		for (vector<Button>::size_type i = 0; i <butSame.size(); i ++)
+		for (vector<Button>::size_type i = 0; i < butSame.size(); i++)
 		{
 			extractShapeParams(butSame[i], innerradi1, outerradi1, startAngle1, stopAngle1, sweepAngle1);
 
@@ -199,7 +197,7 @@ void Drawer::drawButtons(ButtonSet *newButtons, ButtonSet *oldButtons, kbState s
 			}
 		}
 
-		for (vector<Button>::size_type i = 0; i <butFadeIn.size(); i ++)
+		for (vector<Button>::size_type i = 0; i < butFadeIn.size(); i++)
 		{
 			extractShapeParams(butFadeIn[i], innerradi1, outerradi1, startAngle1, stopAngle1, sweepAngle1);
 
@@ -219,7 +217,7 @@ void Drawer::drawButtons(ButtonSet *newButtons, ButtonSet *oldButtons, kbState s
 			}
 		}
 
-		for (vector<Button>::size_type i = 0; i <butFadeOut.size(); i ++)
+		for (vector<Button>::size_type i = 0; i < butFadeOut.size(); i++)
 		{
 			extractShapeParams(butFadeOut[i], innerradi1, outerradi1, startAngle1, stopAngle1, sweepAngle1);
 
@@ -240,35 +238,35 @@ void Drawer::drawButtons(ButtonSet *newButtons, ButtonSet *oldButtons, kbState s
 		}
 
 		//text
-		for (vector<Button>::size_type i = 0; i <butMorphNew.size(); i ++)
+		for (vector<Button>::size_type i = 0; i < butMorphNew.size(); i++)
 		{
 			if (butMorphOld[i].getWriting().getChar() == currChar)
 				morphText(butMorphOld[i], butMorphNew[i], state, countDouble, true);
 			else
 				morphText(butMorphOld[i], butMorphNew[i], noSelect, countDouble, false);
 		}
-		for (vector<Button>::size_type i = 0; i <butSame.size(); i ++)
+		for (vector<Button>::size_type i = 0; i < butSame.size(); i++)
 		{
 			if (butSame[i].getWriting().getChar() == currChar)
-				drawText (butSame[i], 1, true, true);
+				drawText(butSame[i], 1, true, true);
 			else
-				drawText (butSame[i], 1, true, false);
+				drawText(butSame[i], 1, true, false);
 		}
-		for (vector<Button>::size_type i = 0; i <butFadeIn.size(); i ++)
+		for (vector<Button>::size_type i = 0; i < butFadeIn.size(); i++)
 		{
 			if (butFadeIn[i].getWriting().getChar() == currChar)
-				drawText (butFadeIn[i], countDouble, true, true);
+				drawText(butFadeIn[i], countDouble, true, true);
 			else
-				drawText (butFadeIn[i], countDouble, true, false);
+				drawText(butFadeIn[i], countDouble, true, false);
 		}
-		for (vector<Button>::size_type i = 0; i <butFadeOut.size(); i ++)
-			drawText (butFadeOut[i], countDouble, false, false);
+		for (vector<Button>::size_type i = 0; i < butFadeOut.size(); i++)
+			drawText(butFadeOut[i], countDouble, false, false);
 
 
 	}
 	else
 	{
-		for (vector<Button>::size_type i = 0; i < newButtons->getButtons().size(); i ++)
+		for (vector<Button>::size_type i = 0; i < newButtons->getButtons().size(); i++)
 		{
 			extractShapeParams(newButtons->getButtons()[i], innerradi1, outerradi1, startAngle1, stopAngle1, sweepAngle1);
 
@@ -303,33 +301,33 @@ void Drawer::drawButtons(ButtonSet *newButtons, ButtonSet *oldButtons, kbState s
 		}
 		if (currentWord == "~")
 		{
-			for (vector<Button>::size_type i = 0; i < newButtons->getButtons().size(); i ++)
+			for (vector<Button>::size_type i = 0; i < newButtons->getButtons().size(); i++)
 			{
 
-				drawText (newButtons->getButtons()[i], 1, true, false);
+				drawText(newButtons->getButtons()[i], 1, true, false);
 			}
 		}
 		else
 		{
-			for (vector<Button>::size_type i = 0; i < newButtons->getButtons().size(); i ++)
+			for (vector<Button>::size_type i = 0; i < newButtons->getButtons().size(); i++)
 			{
 				if (newButtons->getButtons()[i].getWriting().getChar() == currChar)
-					drawText (newButtons->getButtons()[i], 1, true, true);
+					drawText(newButtons->getButtons()[i], 1, true, true);
 				else
-					drawText (newButtons->getButtons()[i], 1, true, false);
+					drawText(newButtons->getButtons()[i], 1, true, false);
 			}
 		}
 
 	}
 
-	gluDeleteQuadric (obj);
+	gluDeleteQuadric(obj);
 }
 
 
 void Drawer::drawText(Button but, double countDouble, bool FadeIn, bool incPred)
 {
 	double innerRad, outerRad, startAngle, stopAngle, sweepAngle;
-	extractShapeParams (but, innerRad, outerRad, startAngle, stopAngle, sweepAngle);
+	extractShapeParams(but, innerRad, outerRad, startAngle, stopAngle, sweepAngle);
 
 	float rastX, rastY;
 	if ((outerRad == radi0) && (sweepAngle == 360))
@@ -339,38 +337,38 @@ void Drawer::drawText(Button but, double countDouble, bool FadeIn, bool incPred)
 	}
 	else
 	{
-		double radius = (outerRad+innerRad) / 2;
+		double radius = (outerRad + innerRad) / 2;
 		double angle = startAngle + (sweepAngle / 2);
-		convertPolartoCart (angle, radius, rastX, rastY);
+		convertPolartoCart(angle, radius, rastX, rastY);
 	}
 
-	glLineWidth (textWidth);
-	glLoadIdentity ();
-	glTranslatef (SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
+	glLineWidth(textWidth);
+	glLoadIdentity();
+	glTranslatef(SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
 
 	if (FadeIn)
-		setColor (black, countDouble);
+		setColor(black, countDouble);
 	else
-		setColor (black, 1-countDouble);
+		setColor(black, 1 - countDouble);
 
-	float totLength = glutStrokeWidth(GLUT_STROKE_ROMAN, but.getWriting ().getChar ()) * charScale;
+	float totLength = glutStrokeWidth(GLUT_STROKE_ROMAN, but.getWriting().getChar()) * charScale;
 	float totHeight = 119.05 * charScale;
 	rastX -= totLength / 2;
 	rastY += totHeight / 2;
 
 	glTranslatef(rastX, rastY, 0);
 	glScalef(charScale, -charScale, charScale);
-	glutStrokeCharacter(GLUT_STROKE_ROMAN, toupper (but.getWriting ().getChar ()));
+	glutStrokeCharacter(GLUT_STROKE_ROMAN, toupper(but.getWriting().getChar()));
 
 	if (incPred)
 	{
-		glLineWidth (textSmallWidth);
+		glLineWidth(textSmallWidth);
 		rastX += totLength / 2;
 		rastY += 33.33 * charScale;
 
-		string pred = but.getWriting ().getPrediction ();
+		string pred = but.getWriting().getPrediction();
 		totLength = 0;
-		for (int i = 0; i < pred.size (); i++)
+		for (int i = 0; i < pred.size(); i++)
 			totLength += (glutStrokeWidth(GLUT_STROKE_ROMAN, pred[i]) + textSpacing);
 		totLength -= textSpacing;
 		totLength *= predScale;
@@ -380,12 +378,12 @@ void Drawer::drawText(Button but, double countDouble, bool FadeIn, bool incPred)
 		rastY += totHeight;
 
 
-		glLoadIdentity ();
-		glTranslatef (SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
+		glLoadIdentity();
+		glTranslatef(SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
 		glTranslatef(rastX, rastY, 0);
 		glScalef(predScale, -predScale, predScale);
 
-		for (int i = 0; i < pred.size (); i++)
+		for (int i = 0; i < pred.size(); i++)
 		{
 			glutStrokeCharacter(GLUT_STROKE_ROMAN, pred[i]);
 			glTranslatef(glutStrokeWidth(GLUT_STROKE_ROMAN, pred[i]) * predScale + textSpacing, 0, 0);
@@ -394,42 +392,42 @@ void Drawer::drawText(Button but, double countDouble, bool FadeIn, bool incPred)
 }
 
 
-void Drawer::setColor (colorTypes colorCode, float alpha)
+void Drawer::setColor(colorTypes colorCode, float alpha)
 {
 	switch (colorCode)
 	{
 	case cornflowerBlue:
-		glColor4f( 0.392f, 0.584f, 0.929f, alpha);
+		glColor4f(0.392f, 0.584f, 0.929f, alpha);
 		break;
 	case paleOrange:
-		glColor4f( 1.f, 0.898f, 0.706f, alpha);
+		glColor4f(1.f, 0.898f, 0.706f, alpha);
 		break;
 	case orange:
-		glColor4f( 1.f, 0.5f, 0.f, alpha);
+		glColor4f(1.f, 0.5f, 0.f, alpha);
 		break;
 	case black:
-		glColor4f( 0.f, 0.f, 0.f, alpha);
+		glColor4f(0.f, 0.f, 0.f, alpha);
 		break;
 	case green:
-		glColor4f( 0.f, 1.f, 0.f, alpha);
+		glColor4f(0.f, 1.f, 0.f, alpha);
 		break;
 	case purple:
-		glColor4f( 0.624f, 0.475f, 0.933f, alpha);
+		glColor4f(0.624f, 0.475f, 0.933f, alpha);
 		break;
 	case coral:
-		glColor4f( 0.933f, 0.415f, 0.314f, alpha);
+		glColor4f(0.933f, 0.415f, 0.314f, alpha);
 		break;
 	case warmgrey:
-		glColor4f( 0.5f, 0.5f, 0.418f, alpha);
+		glColor4f(0.5f, 0.5f, 0.418f, alpha);
 		break;
 	case olivedrab:
-		glColor4f( 0.420f, 0.557f, 0.137f, alpha);
+		glColor4f(0.420f, 0.557f, 0.137f, alpha);
 		break;
 	case goldenrod:
-		glColor4f( 0.803f, 0.584f, 0.047f, alpha);
+		glColor4f(0.803f, 0.584f, 0.047f, alpha);
 		break;
 	case turquoise:
-		glColor4f( 0.f, 0.773f, 0.804f, alpha);
+		glColor4f(0.f, 0.773f, 0.804f, alpha);
 		break;
 
 	}
@@ -462,10 +460,10 @@ void Drawer::convertPolartoCart(double angle, double radius, float &x, float &y)
 	}
 }
 
-void Drawer::extractShapeParams (Button but, double &innerRad, double &outerRad, double &startAngle, double &stopAngle, double &sweepAngle)
+void Drawer::extractShapeParams(Button but, double &innerRad, double &outerRad, double &startAngle, double &stopAngle, double &sweepAngle)
 {
 	int loopStart, loopEnd, rowStart, rowEnd;
-	but.getButtonShape ().getShape (loopStart, loopEnd, rowStart, rowEnd);
+	but.getButtonShape().getShape(loopStart, loopEnd, rowStart, rowEnd);
 
 	startAngle = rowStart * 30;
 	stopAngle = rowEnd * 30;
@@ -504,7 +502,7 @@ void Drawer::extractShapeParams (Button but, double &innerRad, double &outerRad,
 
 
 
-double Drawer::fanBetweenTwoAngles (double angle1, double angle2)
+double Drawer::fanBetweenTwoAngles(double angle1, double angle2)
 {
 	double high, low;
 	if (angle1 < angle2)
@@ -518,8 +516,8 @@ double Drawer::fanBetweenTwoAngles (double angle1, double angle2)
 		low = angle2;
 	}
 
-	double fan1 = high-low;
-	double fan2 = 360-high+low;
+	double fan1 = high - low;
+	double fan2 = 360 - high + low;
 
 	if (fan1 < fan2)
 		return fan1;
@@ -528,20 +526,20 @@ double Drawer::fanBetweenTwoAngles (double angle1, double angle2)
 }
 void Drawer::morphText(Button oldBut, Button newBut, kbState state, double morphDouble, bool incPred)
 {
-	glLoadIdentity ();
-	glTranslatef (SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
+	glLoadIdentity();
+	glTranslatef(SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
 
 	double innerradi1, outerradi1, startAngle1, stopAngle1, sweepAngle1, innerradi2, outerradi2, startAngle2, stopAngle2, sweepAngle2;
-	extractShapeParams (oldBut, innerradi1, outerradi1, startAngle1, stopAngle1, sweepAngle1);
-	extractShapeParams (newBut, innerradi2, outerradi2, startAngle2, stopAngle2, sweepAngle2);
+	extractShapeParams(oldBut, innerradi1, outerradi1, startAngle1, stopAngle1, sweepAngle1);
+	extractShapeParams(newBut, innerradi2, outerradi2, startAngle2, stopAngle2, sweepAngle2);
 
 	double innerRad, outerRad, startAngle, stopAngle, sweepAngle;
 	innerRad = innerradi1 + (innerradi2 - innerradi1) * morphDouble;
 	outerRad = outerradi1 + (outerradi2 - outerradi1) * morphDouble;
 
-	double angleFan = fanBetweenTwoAngles (startAngle1, startAngle2);
+	double angleFan = fanBetweenTwoAngles(startAngle1, startAngle2);
 
-	if (startAngle1 < startAngle2)															
+	if (startAngle1 < startAngle2)
 	{
 		if (startAngle1 + 180 > startAngle2)
 		{
@@ -604,34 +602,34 @@ void Drawer::morphText(Button oldBut, Button newBut, kbState state, double morph
 	}
 	else
 	{
-		double radius = (outerRad+innerRad) / 2;
+		double radius = (outerRad + innerRad) / 2;
 		double angle = startAngle + (sweepAngle / 2);
-		convertPolartoCart (angle, radius, rastX, rastY);
+		convertPolartoCart(angle, radius, rastX, rastY);
 	}
 
-	glLineWidth (textWidth);
+	glLineWidth(textWidth);
 
 
-	setColor (black, 1);
+	setColor(black, 1);
 
-	float totLength = glutStrokeWidth(GLUT_STROKE_ROMAN, newBut.getWriting ().getChar ()) * charScale;
+	float totLength = glutStrokeWidth(GLUT_STROKE_ROMAN, newBut.getWriting().getChar()) * charScale;
 	float totHeight = 119.05 * charScale;
 	rastX -= totLength / 2;
 	rastY += totHeight / 2;
 
 	glTranslatef(rastX, rastY, 0);
 	glScalef(charScale, -charScale, charScale);
-	glutStrokeCharacter(GLUT_STROKE_ROMAN, toupper (newBut.getWriting ().getChar ()));
+	glutStrokeCharacter(GLUT_STROKE_ROMAN, toupper(newBut.getWriting().getChar()));
 
 	if (incPred)
 	{
-		glLineWidth (textSmallWidth);
+		glLineWidth(textSmallWidth);
 		rastX += totLength / 2;
 		rastY += 33.33 * charScale;
 
-		string pred = newBut.getWriting ().getPrediction ();
+		string pred = newBut.getWriting().getPrediction();
 		totLength = 0;
-		for (int i = 0; i < pred.size (); i++)
+		for (int i = 0; i < pred.size(); i++)
 			totLength += (glutStrokeWidth(GLUT_STROKE_ROMAN, pred[i]) + textSpacing);
 		totLength -= textSpacing;
 		totLength *= predScale;
@@ -641,12 +639,12 @@ void Drawer::morphText(Button oldBut, Button newBut, kbState state, double morph
 		rastY += totHeight;
 
 
-		glLoadIdentity ();
-		glTranslatef (SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
+		glLoadIdentity();
+		glTranslatef(SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
 		glTranslatef(rastX, rastY, 0);
 		glScalef(predScale, -predScale, predScale);
 
-		for (int i = 0; i < pred.size (); i++)
+		for (int i = 0; i < pred.size(); i++)
 		{
 			glutStrokeCharacter(GLUT_STROKE_ROMAN, pred[i]);
 			glTranslatef(glutStrokeWidth(GLUT_STROKE_ROMAN, pred[i]) * predScale + textSpacing, 0, 0);
@@ -657,16 +655,16 @@ void Drawer::morphText(Button oldBut, Button newBut, kbState state, double morph
 
 
 
-void Drawer::drawMorphingInnerButton (GLUquadric* obj,double startAngle1 , double startAngle2, double sweepAngle1, colorTypes color, double morphRatio)
+void Drawer::drawMorphingInnerButton(GLUquadric* obj, double startAngle1, double startAngle2, double sweepAngle1, colorTypes color, double morphRatio)
 {
 
-	setColor (color, 1);
+	setColor(color, 1);
 
-	gluPartialDisk (obj,  0,  radi0,  slices,  loops,  0,  360);
+	gluPartialDisk(obj, 0, radi0, slices, loops, 0, 360);
 
-	setColor (black, 1);
+	setColor(black, 1);
 
-	if (sweepAngle1 == 180)	
+	if (sweepAngle1 == 180)
 	{
 		if (startAngle1 == 0) //up to full	
 		{
@@ -711,7 +709,7 @@ void Drawer::drawMorphingInnerButton (GLUquadric* obj,double startAngle1 , doubl
 
 }
 
-void Drawer::drawInnerButton (GLUquadric* obj, double startAngle, double sweepAngle, double fillRatio, colorTypes frontColor, colorTypes backColor, double alpha)
+void Drawer::drawInnerButton(GLUquadric* obj, double startAngle, double sweepAngle, double fillRatio, colorTypes frontColor, colorTypes backColor, double alpha)
 {
 	double innerRad, outerRad, fillOuterRad;
 	innerRad = 0;
@@ -726,53 +724,53 @@ void Drawer::drawInnerButton (GLUquadric* obj, double startAngle, double sweepAn
 
 	if (frontColor == backColor)
 	{
-		setColor (colorFront, alpha);
-		gluPartialDisk (obj,  innerRad,  outerRad,  slices,  loops,  startAngle,  sweepAngle);
+		setColor(colorFront, alpha);
+		gluPartialDisk(obj, innerRad, outerRad, slices, loops, startAngle, sweepAngle);
 	}
 	else
 	{
-		setColor (backColor, alpha);
-		gluPartialDisk (obj,  innerRad,  outerRad,  slices,  loops,  startAngle,  sweepAngle);
-		setColor (frontColor, alpha);
-		gluPartialDisk (obj,  innerRad,  fillOuterRad,  slices,  loops,  startAngle,  sweepAngle);
+		setColor(backColor, alpha);
+		gluPartialDisk(obj, innerRad, outerRad, slices, loops, startAngle, sweepAngle);
+		setColor(frontColor, alpha);
+		gluPartialDisk(obj, innerRad, fillOuterRad, slices, loops, startAngle, sweepAngle);
 	}
 
 
-	setColor (black, alpha);
+	setColor(black, alpha);
 
-	gluPartialDisk (obj,  outerRad - circleBoundary,  outerRad,  slices,  loops,  startAngle,  sweepAngle);
+	gluPartialDisk(obj, outerRad - circleBoundary, outerRad, slices, loops, startAngle, sweepAngle);
 
 	if (sweepAngle != 360)
 	{
-		glLineWidth (lineWidth);
+		glLineWidth(lineWidth);
 
 		if (outerRad == radi0)
 		{
-			glBegin (GL_LINES);
-			glVertex3f (innerRad + radi0, 0, 0);
-			glVertex3f (innerRad - radi0, 0, 0);
-			glEnd ();
+			glBegin(GL_LINES);
+			glVertex3f(innerRad + radi0, 0, 0);
+			glVertex3f(innerRad - radi0, 0, 0);
+			glEnd();
 		}
 		else
 		{
-			float sinStartAngle = sin ((startAngle / 180) * M_PI);
-			float cosStartAngle = cos ((startAngle / 180) * M_PI);
-			float sinStopAngle = sin ((stopAngle / 180) * M_PI);
-			float cosStopAngle = cos ((stopAngle / 180) * M_PI);
+			float sinStartAngle = sin((startAngle / 180) * M_PI);
+			float cosStartAngle = cos((startAngle / 180) * M_PI);
+			float sinStopAngle = sin((stopAngle / 180) * M_PI);
+			float cosStopAngle = cos((stopAngle / 180) * M_PI);
 
-			glBegin (GL_LINES);
-			glVertex3f (innerRad * sinStartAngle, innerRad * cosStartAngle, 0.0);
-			glVertex3f (outerRad * sinStartAngle, outerRad * cosStartAngle, 0.0);
-			glVertex3f (innerRad * sinStopAngle, innerRad * cosStopAngle, 0.0);
-			glVertex3f (outerRad * sinStopAngle, outerRad * cosStopAngle, 0.0);
-			glEnd ();
+			glBegin(GL_LINES);
+			glVertex3f(innerRad * sinStartAngle, innerRad * cosStartAngle, 0.0);
+			glVertex3f(outerRad * sinStartAngle, outerRad * cosStartAngle, 0.0);
+			glVertex3f(innerRad * sinStopAngle, innerRad * cosStopAngle, 0.0);
+			glVertex3f(outerRad * sinStopAngle, outerRad * cosStopAngle, 0.0);
+			glEnd();
 		}
 	}
 
 
 }
 
-void Drawer::drawFillingButton (GLUquadric* obj, double innerRad, double outerRad, double startAngle, double sweepAngle, double fillRatio, colorTypes frontColor)
+void Drawer::drawFillingButton(GLUquadric* obj, double innerRad, double outerRad, double startAngle, double sweepAngle, double fillRatio, colorTypes frontColor)
 {
 	double fillOuterRad = innerRad + (outerRad - innerRad) * fillRatio;
 
@@ -781,91 +779,91 @@ void Drawer::drawFillingButton (GLUquadric* obj, double innerRad, double outerRa
 	if (stopAngle > 360)
 		stopAngle -= 360;
 
-	setColor (colorBack, 1);
-	gluPartialDisk (obj,  innerRad,  outerRad,  slices,  loops,  startAngle,  sweepAngle);
+	setColor(colorBack, 1);
+	gluPartialDisk(obj, innerRad, outerRad, slices, loops, startAngle, sweepAngle);
 
-	setColor (frontColor, 1);
-	gluPartialDisk (obj,  innerRad,  fillOuterRad,  slices,  loops,  startAngle,  sweepAngle);
+	setColor(frontColor, 1);
+	gluPartialDisk(obj, innerRad, fillOuterRad, slices, loops, startAngle, sweepAngle);
 
-	setColor (black, 1);
-	gluPartialDisk (obj,  outerRad - circleBoundary,  outerRad,  slices,  loops,  startAngle,  sweepAngle);
+	setColor(black, 1);
+	gluPartialDisk(obj, outerRad - circleBoundary, outerRad, slices, loops, startAngle, sweepAngle);
 	if (innerRad != 0)
-		gluPartialDisk (obj,  innerRad,  innerRad + circleBoundary,  slices,  loops,  startAngle,  sweepAngle);
+		gluPartialDisk(obj, innerRad, innerRad + circleBoundary, slices, loops, startAngle, sweepAngle);
 
 	if (sweepAngle != 360)
 	{
-		glLineWidth (lineWidth);
+		glLineWidth(lineWidth);
 
 		if (outerRad == radi0)
 		{
-			glBegin (GL_LINES);
-			glVertex3f (innerRad + radi0, 0, 0);
-			glVertex3f (innerRad - radi0, 0, 0);
-			glEnd ();
+			glBegin(GL_LINES);
+			glVertex3f(innerRad + radi0, 0, 0);
+			glVertex3f(innerRad - radi0, 0, 0);
+			glEnd();
 		}
 		else
 		{
-			float sinStartAngle = sin ((startAngle / 180) * M_PI);
-			float cosStartAngle = cos ((startAngle / 180) * M_PI);
-			float sinStopAngle = sin ((stopAngle / 180) * M_PI);
-			float cosStopAngle = cos ((stopAngle / 180) * M_PI);
+			float sinStartAngle = sin((startAngle / 180) * M_PI);
+			float cosStartAngle = cos((startAngle / 180) * M_PI);
+			float sinStopAngle = sin((stopAngle / 180) * M_PI);
+			float cosStopAngle = cos((stopAngle / 180) * M_PI);
 
-			glBegin (GL_LINES);
-			glVertex3f (innerRad * sinStartAngle, innerRad * cosStartAngle, 0.0);
-			glVertex3f (outerRad * sinStartAngle, outerRad * cosStartAngle, 0.0);
-			glVertex3f (innerRad * sinStopAngle, innerRad * cosStopAngle, 0.0);
-			glVertex3f (outerRad * sinStopAngle, outerRad * cosStopAngle, 0.0);
-			glEnd ();
+			glBegin(GL_LINES);
+			glVertex3f(innerRad * sinStartAngle, innerRad * cosStartAngle, 0.0);
+			glVertex3f(outerRad * sinStartAngle, outerRad * cosStartAngle, 0.0);
+			glVertex3f(innerRad * sinStopAngle, innerRad * cosStopAngle, 0.0);
+			glVertex3f(outerRad * sinStopAngle, outerRad * cosStopAngle, 0.0);
+			glEnd();
 		}
 	}
 
 }
 
-void Drawer::drawRegularButton (GLUquadric* obj, double innerRad, double outerRad, double startAngle, double sweepAngle, colorTypes frontColor, double alpha)
+void Drawer::drawRegularButton(GLUquadric* obj, double innerRad, double outerRad, double startAngle, double sweepAngle, colorTypes frontColor, double alpha)
 {
 	startAngle += 90;
 	double stopAngle = startAngle + sweepAngle;
 	if (stopAngle > 360)
 		stopAngle -= 360;
 
-	setColor (frontColor, alpha);
-	gluPartialDisk (obj,  innerRad,  outerRad,  slices,  loops,  startAngle,  sweepAngle);
+	setColor(frontColor, alpha);
+	gluPartialDisk(obj, innerRad, outerRad, slices, loops, startAngle, sweepAngle);
 
-	setColor (black, alpha);
-	gluPartialDisk (obj,  outerRad - circleBoundary,  outerRad,  slices,  loops,  startAngle,  sweepAngle);
+	setColor(black, alpha);
+	gluPartialDisk(obj, outerRad - circleBoundary, outerRad, slices, loops, startAngle, sweepAngle);
 	if (innerRad != 0)
-		gluPartialDisk (obj,  innerRad,  innerRad + circleBoundary,  slices,  loops,  startAngle,  sweepAngle);
+		gluPartialDisk(obj, innerRad, innerRad + circleBoundary, slices, loops, startAngle, sweepAngle);
 
 	if (sweepAngle != 360)
 	{
-		glLineWidth (lineWidth);
+		glLineWidth(lineWidth);
 
 		if (outerRad == radi0)
 		{
-			glBegin (GL_LINES);
-			glVertex3f (innerRad + radi0, 0, 0);
-			glVertex3f (innerRad - radi0, 0, 0);
-			glEnd ();
+			glBegin(GL_LINES);
+			glVertex3f(innerRad + radi0, 0, 0);
+			glVertex3f(innerRad - radi0, 0, 0);
+			glEnd();
 		}
 		else
 		{
-			float sinStartAngle = sin ((startAngle / 180) * M_PI);
-			float cosStartAngle = cos ((startAngle / 180) * M_PI);
-			float sinStopAngle = sin ((stopAngle / 180) * M_PI);
-			float cosStopAngle = cos ((stopAngle / 180) * M_PI);
+			float sinStartAngle = sin((startAngle / 180) * M_PI);
+			float cosStartAngle = cos((startAngle / 180) * M_PI);
+			float sinStopAngle = sin((stopAngle / 180) * M_PI);
+			float cosStopAngle = cos((stopAngle / 180) * M_PI);
 
-			glBegin (GL_LINES);
-			glVertex3f (innerRad * sinStartAngle, innerRad * cosStartAngle, 0.0);
-			glVertex3f (outerRad * sinStartAngle, outerRad * cosStartAngle, 0.0);
-			glVertex3f (innerRad * sinStopAngle, innerRad * cosStopAngle, 0.0);
-			glVertex3f (outerRad * sinStopAngle, outerRad * cosStopAngle, 0.0);
-			glEnd ();
+			glBegin(GL_LINES);
+			glVertex3f(innerRad * sinStartAngle, innerRad * cosStartAngle, 0.0);
+			glVertex3f(outerRad * sinStartAngle, outerRad * cosStartAngle, 0.0);
+			glVertex3f(innerRad * sinStopAngle, innerRad * cosStopAngle, 0.0);
+			glVertex3f(outerRad * sinStopAngle, outerRad * cosStopAngle, 0.0);
+			glEnd();
 		}
 	}
 
 }
 
-void Drawer::updateButtonVectors (ButtonSet *newButtons, ButtonSet *oldButtons)
+void Drawer::updateButtonVectors(ButtonSet *newButtons, ButtonSet *oldButtons)
 {
 	butFadeIn.clear();
 	butFadeOut.clear();
@@ -915,7 +913,7 @@ void Drawer::updateButtonVectors (ButtonSet *newButtons, ButtonSet *oldButtons)
 	}
 }
 
-bool Drawer::areButtonShapesSame (Button &but1, Button &but2)
+bool Drawer::areButtonShapesSame(Button &but1, Button &but2)
 {
 	int loopStart1, loopEnd1, rowStart1, rowEnd1, loopStart2, loopEnd2, rowStart2, rowEnd2;
 
@@ -933,43 +931,43 @@ void Drawer::drawBackground(GLUquadric* obj, kbState state, double countDouble, 
 	if (currWord == "~")
 		return;
 	double halfSize = SCREEN_SIZE / 2;
-	setColor (colorFront, 1);
-	glBegin (GL_POLYGON);
-	glVertex3f (-halfSize, -halfSize, 0);
-	glVertex3f (halfSize, -halfSize, 0);
-	glVertex3f (halfSize, halfSize, 0);
-	glVertex3f (-halfSize, halfSize, 0);
-	glEnd ();
+	setColor(colorFront, 1);
+	glBegin(GL_POLYGON);
+	glVertex3f(-halfSize, -halfSize, 0);
+	glVertex3f(halfSize, -halfSize, 0);
+	glVertex3f(halfSize, halfSize, 0);
+	glVertex3f(-halfSize, halfSize, 0);
+	glEnd();
 
 	if (state == selectOuter)
 	{
-		setColor (colorS1, 1);
-		double radius = sqrt (pow (halfSize,2) * 2);
+		setColor(colorS1, 1);
+		double radius = sqrt(pow(halfSize, 2) * 2);
 		if (currChar == 1)
-			gluPartialDisk (obj,  halfSize,  halfSize + (radius - halfSize) * countDouble,  slices,  loops,  90,  90);
+			gluPartialDisk(obj, halfSize, halfSize + (radius - halfSize) * countDouble, slices, loops, 90, 90);
 		else if (currChar == 2)
-			gluPartialDisk (obj,  halfSize,  halfSize + (radius - halfSize) * countDouble,  slices,  loops,  180,  90);
+			gluPartialDisk(obj, halfSize, halfSize + (radius - halfSize) * countDouble, slices, loops, 180, 90);
 		else if (currChar == 3)
-			gluPartialDisk (obj,  halfSize,  halfSize + (radius - halfSize) * countDouble,  slices,  loops,  270,  90);
+			gluPartialDisk(obj, halfSize, halfSize + (radius - halfSize) * countDouble, slices, loops, 270, 90);
 		else if (currChar == 4)
-			gluPartialDisk (obj,  halfSize,  halfSize + (radius - halfSize) * countDouble,  slices,  loops,  0,  90);
+			gluPartialDisk(obj, halfSize, halfSize + (radius - halfSize) * countDouble, slices, loops, 0, 90);
 	}
 	else if (state == secondClear)
 	{
-		setColor (colorS2, 1);
-		double radius = sqrt (pow (halfSize,2) * 2);
-		gluPartialDisk (obj,  halfSize,  halfSize + (radius - halfSize) * countDouble,  slices,  loops,  90,  90);
+		setColor(colorS2, 1);
+		double radius = sqrt(pow(halfSize, 2) * 2);
+		gluPartialDisk(obj, halfSize, halfSize + (radius - halfSize) * countDouble, slices, loops, 90, 90);
 	}
 
-	setColor (black, 1);
+	setColor(black, 1);
 	gluDisk(obj, 0, halfSize, slices, loops);
-	glLineWidth (textWidth);
+	glLineWidth(textWidth);
 
-	setColor (black, 1);
+	setColor(black, 1);
 	float totLength = 0;
-	for (int i = 0; i < currWord.size (); i++)
+	for (int i = 0; i < currWord.size(); i++)
 	{
-		currWord[i] = toupper (currWord[i]);
+		currWord[i] = toupper(currWord[i]);
 		totLength += (glutStrokeWidth(GLUT_STROKE_ROMAN, currWord[i]) + textSpacing);
 	}
 	totLength -= textSpacing;
@@ -979,72 +977,72 @@ void Drawer::drawBackground(GLUquadric* obj, kbState state, double countDouble, 
 	float rastY = -halfSize + totHeight + textSpacing * 5;
 	glTranslatef(rastX, rastY, 0);
 	glScalef(charScale, -charScale, charScale);
-	for (int i = 0; i < currWord.size (); i++)
+	for (int i = 0; i < currWord.size(); i++)
 	{
 		glutStrokeCharacter(GLUT_STROKE_ROMAN, currWord[i]);
 		glTranslatef(glutStrokeWidth(GLUT_STROKE_ROMAN, currWord[i]) * charScale + textSpacing, 0, 0);
 	}
 
-	setColor (black, 1);
+	setColor(black, 1);
 	string bksp = "Backspace";
-	glLineWidth (textSmallWidth);
+	glLineWidth(textSmallWidth);
 	totLength = 0;
-	for (int i = 0; i < bksp.size (); i++)
+	for (int i = 0; i < bksp.size(); i++)
 		totLength += (glutStrokeWidth(GLUT_STROKE_ROMAN, bksp[i]) + textSpacing);
 	totLength -= textSpacing;
 	totLength *= predScale;
 	rastX = halfSize - totLength*1.25;
 	rastY = -halfSize + totHeight*1.5;
-	glLoadIdentity ();
-	glTranslatef (SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
+	glLoadIdentity();
+	glTranslatef(SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
 	glTranslatef(rastX, rastY, 0);
 	glScalef(predScale, -predScale, predScale);
-	for (int i = 0; i < bksp.size (); i++)
+	for (int i = 0; i < bksp.size(); i++)
 	{
 		glutStrokeCharacter(GLUT_STROKE_ROMAN, bksp[i]);
 		glTranslatef(glutStrokeWidth(GLUT_STROKE_ROMAN, bksp[i]) * predScale + textSpacing, 0, 0);
 	}
 
 	string otk = "Other Keys";
-	glLineWidth (textSmallWidth);
+	glLineWidth(textSmallWidth);
 	totLength = 0;
-	for (int i = 0; i < otk.size (); i++)
+	for (int i = 0; i < otk.size(); i++)
 		totLength += (glutStrokeWidth(GLUT_STROKE_ROMAN, otk[i]) + textSpacing);
 	totLength -= textSpacing;
 	totLength *= predScale;
 	rastX = -halfSize + textSpacing * 5;
 	rastY = halfSize - totHeight*0.5 - textSpacing;
-	glLoadIdentity ();
-	glTranslatef (SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
+	glLoadIdentity();
+	glTranslatef(SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
 	glTranslatef(rastX, rastY, 0);
 	glScalef(predScale, -predScale, predScale);
-	for (int i = 0; i < otk.size (); i++)
+	for (int i = 0; i < otk.size(); i++)
 	{
 		glutStrokeCharacter(GLUT_STROKE_ROMAN, otk[i]);
 		glTranslatef(glutStrokeWidth(GLUT_STROKE_ROMAN, otk[i]) * predScale + textSpacing, 0, 0);
 	}
 
 	string opt = "Options";
-	glLineWidth (textSmallWidth);
+	glLineWidth(textSmallWidth);
 	totLength = 0;
-	for (int i = 0; i < opt.size (); i++)
+	for (int i = 0; i < opt.size(); i++)
 		totLength += (glutStrokeWidth(GLUT_STROKE_ROMAN, otk[i]) + textSpacing);
 	totLength -= textSpacing;
 	totLength *= predScale;
-	rastX = halfSize -totLength*1.5;
+	rastX = halfSize - totLength*1.5;
 	rastY = halfSize - totHeight*0.5 - textSpacing;
-	glLoadIdentity ();
-	glTranslatef (SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
+	glLoadIdentity();
+	glTranslatef(SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
 	glTranslatef(rastX, rastY, 0);
 	glScalef(predScale, -predScale, predScale);
-	for (int i = 0; i < opt.size (); i++)
+	for (int i = 0; i < opt.size(); i++)
 	{
 		glutStrokeCharacter(GLUT_STROKE_ROMAN, opt[i]);
 		glTranslatef(glutStrokeWidth(GLUT_STROKE_ROMAN, opt[i]) * predScale + textSpacing, 0, 0);
 	}
 
-	glLoadIdentity ();
-	glTranslatef (SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
+	glLoadIdentity();
+	glTranslatef(SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f, 0.f);
 }
 
 

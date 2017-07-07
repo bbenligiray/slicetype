@@ -14,21 +14,21 @@ class PosChart
 	vector<int> loop2;
 public:
 	PosChart();
-	void fillPos (int loop, int row);
-	const vector<int>& PosChart::getLoop (int loop) const;
+	void fillPos(int loop, int row);
+	const vector<int>& PosChart::getLoop(int loop) const;
 };
 
 
 
-PosChart::PosChart ()
+PosChart::PosChart()
 {
 	//initialize all elements with 0
-	loop0 = vector<int> (2, 0);
-	loop1 = vector<int> (12, 0);
-	loop2 = vector<int> (12, 0);
+	loop0 = vector<int>(2, 0);
+	loop1 = vector<int>(12, 0);
+	loop2 = vector<int>(12, 0);
 }
 
-void PosChart::fillPos (int loop, int row)
+void PosChart::fillPos(int loop, int row)
 {
 	switch (loop)
 	{
@@ -44,7 +44,7 @@ void PosChart::fillPos (int loop, int row)
 	}
 }
 
-const vector<int>& PosChart::getLoop (int loop) const
+const vector<int>& PosChart::getLoop(int loop) const
 {
 	switch (loop)
 	{

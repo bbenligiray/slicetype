@@ -17,7 +17,7 @@ using std::endl;
 string progName = "SliceType";
 HWND currentWindow, newWindow, thisWindow;
 char windowText[1024];
-bool halfEntry=false;
+bool halfEntry = false;
 unsigned int lastEnteredWordLength = 1;
 
 void changeScreenSize(int newWidth, int newHeight);
@@ -33,12 +33,12 @@ class KeyMain
 	MouseStatus mouseStat;
 	int counter, mCounter;
 	bool boolMorph;
-	bool isSameButtonset (ButtonSet* bs1, ButtonSet* bs2);
-	void sendString (string s);
+	bool isSameButtonset(ButtonSet* bs1, ButtonSet* bs2);
+	void sendString(string s);
 	void deleteLastWord();
 public:
-	void updateMouseCell (int x, int y);
-	void tickCounter ();
+	void updateMouseCell(int x, int y);
+	void tickCounter();
 	KeyMain();
 	void TEMPDRAW();
 };
@@ -50,22 +50,22 @@ KeyMain::KeyMain()
 	currChar = '\n';
 	counter = 0;
 	mCounter = 0;
-	cout << "Init with no selection." << endl;	
-	
+	cout << "Init with no selection." << endl;
+
 }
 
-void KeyMain::updateMouseCell (int x, int y)
+void KeyMain::updateMouseCell(int x, int y)
 {
-	if (mouseStat.updateCell (x, y))
+	if (mouseStat.updateCell(x, y))
 	{
 		int inpLoop, inpRow;
-		mouseStat.getCell (inpLoop, inpRow);
-		
+		mouseStat.getCell(inpLoop, inpRow);
+
 		if (inpLoop == -1)
 		{
-			if (state==selectingOtherKey)
+			if (state == selectingOtherKey)
 			{
-				state=selectOtherKey;
+				state = selectOtherKey;
 				counter = 0;
 				currChar = '\n';
 				return;
@@ -90,9 +90,9 @@ void KeyMain::updateMouseCell (int x, int y)
 		}
 		else if (inpLoop == 3)
 		{
-			if (state==selectOtherKey)
+			if (state == selectOtherKey)
 			{
-				state=selectOtherKey;
+				state = selectOtherKey;
 				counter = 0;
 				currChar = '\n';
 				return;
@@ -116,20 +116,20 @@ void KeyMain::updateMouseCell (int x, int y)
 
 		Button onButton;
 
-		if ((state==selectOtherKey)||(state==selectingOtherKey))
+		if ((state == selectOtherKey) || (state == selectingOtherKey))
 		{
-			kb.getOtherButtons ()->getButtonWithField (inpLoop, inpRow, onButton);
+			kb.getOtherButtons()->getButtonWithField(inpLoop, inpRow, onButton);
 
 			if (onButton.getWriting().getChar() != currChar)
 			{
 				currChar = onButton.getWriting().getChar();
-				state=selectingOtherKey;
+				state = selectingOtherKey;
 				counter = 0;
 				return;
 			}
 		}
 
-		if (!kb.getButtonSet ()->getButtonWithField (inpLoop, inpRow, onButton))
+		if (!kb.getButtonSet()->getButtonWithField(inpLoop, inpRow, onButton))
 		{
 			if (state == select2)
 			{
@@ -173,14 +173,11 @@ void KeyMain::updateMouseCell (int x, int y)
 			currChar = onButton.getWriting().getChar();
 			state = select1;
 			counter = 0;
-
-			
-			
 		}
 	}
 }
 
-void KeyMain::tickCounter ()
+void KeyMain::tickCounter()
 {
 	thisWindow = FindWindow(NULL, windowTitle.c_str());
 	if (thisWindow == NULL)
@@ -197,7 +194,7 @@ void KeyMain::tickCounter ()
 
 
 
-	
+
 	int width, height;
 	width = thisWindowRect.right - thisWindowRect.left - 16;
 	height = thisWindowRect.bottom - thisWindowRect.top - 38;
@@ -205,23 +202,16 @@ void KeyMain::tickCounter ()
 	SCREEN_SIZE_X = width;
 	SCREEN_SIZE_Y = height;
 
-	//changeScreenSize(width, height);
-	
-	/*SetWindowPos(thisWindow, NULL, thisWindowRect.left, thisWindowRect.top, std::max(width, height)+16, std::max(width, height)+38, NULL);
-	if (SCREEN_SIZE != std::max(width, height))
-		changeScreenSize(std::max(width, height));*/
-																					
+
 
 	newWindow = GetForegroundWindow();
 	if (newWindow == thisWindow)
 	{
-		/*currentWindow = newWindow;
-		glutSetWindowTitle(progName.c_str());*/
 	}
 	else if (newWindow != currentWindow)
 	{
 		currentWindow = newWindow;
-		GetWindowText(currentWindow,windowText,1024);
+		GetWindowText(currentWindow, windowText, 1024);
 		windowTitle = string(windowText);
 		if (windowTitle.size() == 0)
 		{
@@ -234,10 +224,10 @@ void KeyMain::tickCounter ()
 			glutSetWindowTitle(windowTitle.c_str());
 		}
 	}
-	
 
 
-	if ((state != noSelect) && (state != selectOtherKey)&& (!boolMorph))
+
+	if ((state != noSelect) && (state != selectOtherKey) && (!boolMorph))
 		counter++;
 
 	mCounter++;
@@ -275,7 +265,7 @@ void KeyMain::tickCounter ()
 		}
 		if (state == selectOuter)
 		{
-			counter=0;
+			counter = 0;
 			if (currChar == 1)
 			{
 				prevButtons = kb.getButtonSet();
@@ -283,14 +273,14 @@ void KeyMain::tickCounter ()
 				boolMorph = !isSameButtonset(prevButtons, kb.getButtonSet());
 				counter = 0;
 				mCounter = 0;
-				state = secondClear;				// add second selection
+				state = secondClear;
 				currChar = '\n';
 			}
 			else if (currChar == 2)
 			{
 				kb.setLastWord(kb.getCurrWord());
 				prevButtons = kb.getButtonSet();
-				string stringToSend = kb.getCurrWord();							/////
+				string stringToSend = kb.getCurrWord();
 				halfEntry = true;
 				sendString(stringToSend);
 				kb.clearCurrWord();
@@ -300,7 +290,7 @@ void KeyMain::tickCounter ()
 				mCounter = 0;
 				state = noSelect;
 				currChar = '\n';
-				
+
 			}
 			else if (currChar == 3)
 			{
@@ -326,10 +316,10 @@ void KeyMain::tickCounter ()
 			prevButtons = kb.getButtonSet();
 			state = noSelect;
 			cout << "Finish select2 " << currChar << endl;
-			
 
-			string stringToSend = kb.enterWord ();						/////
-			
+
+			string stringToSend = kb.enterWord();
+
 			sendString(stringToSend);
 			currChar = '\n';
 		}
@@ -341,18 +331,18 @@ void KeyMain::tickCounter ()
 
 void KeyMain::TEMPDRAW()
 {
-	if (state==secondClear)
-		int a=2;
+	if (state == secondClear)
+		int a = 2;
 
 	if (boolMorph)
 		dr.drawButtons(kb.getButtonSet(), prevButtons, state, boolMorph, (double)mCounter / morphCount, currChar, kb.getCurrWord());
-	else if ((state == selectingOtherKey)||(state == selectOtherKey))
+	else if ((state == selectingOtherKey) || (state == selectOtherKey))
 		dr.drawButtons(kb.getOtherButtons(), prevButtons, select1, false, (double)counter / selectCount, currChar, "~");
 	else
 		dr.drawButtons(kb.getButtonSet(), prevButtons, state, boolMorph, (double)counter / selectCount, currChar, kb.getCurrWord());
 }
 
-bool KeyMain::isSameButtonset (ButtonSet* bs1, ButtonSet* bs2)
+bool KeyMain::isSameButtonset(ButtonSet* bs1, ButtonSet* bs2)
 {
 	if (bs1->getButtons().size() != bs2->getButtons().size())
 		return false;
@@ -371,24 +361,24 @@ bool KeyMain::isSameButtonset (ButtonSet* bs1, ButtonSet* bs2)
 	return true;
 }
 
-void KeyMain::sendString (string s)
+void KeyMain::sendString(string s)
 {
 	SetForegroundWindow(currentWindow);
 
 	INPUT ip;
-    ip.type = INPUT_KEYBOARD;
-    ip.ki.time = 0;
-    ip.ki.dwFlags = KEYEVENTF_UNICODE;
+	ip.type = INPUT_KEYBOARD;
+	ip.ki.time = 0;
+	ip.ki.dwFlags = KEYEVENTF_UNICODE;
 	ip.ki.wVk = 0;
-    ip.ki.dwExtraInfo = 0;
+	ip.ki.dwExtraInfo = 0;
 
-	lastEnteredWordLength=s.size();
+	lastEnteredWordLength = s.size();
 
-	if (s==".")
+	if (s == ".")
 	{
-		lastEnteredWordLength=1;
+		lastEnteredWordLength = 1;
 		deleteLastWord();
-		lastEnteredWordLength=s.size();
+		lastEnteredWordLength = s.size();
 	}
 
 
@@ -396,10 +386,10 @@ void KeyMain::sendString (string s)
 	{
 		ip.ki.wScan = s[i];
 		SendInput(1, &ip, sizeof(INPUT));
-		if (s[i] == s[i+1] && i + 1 != s.size())
+		if (s[i] == s[i + 1] && i + 1 != s.size())
 			Sleep(25);
 	}
-	if (true) /*(!(isdigit(s.c_str()[0]) && s.size() == 1) && !halfEntry)*/
+	if (true)
 	{
 		ip.ki.wScan = ' ';
 		SendInput(1, &ip, sizeof(INPUT));
@@ -418,40 +408,21 @@ void KeyMain::deleteLastWord()
 
 	INPUT ip;
 
-    ip.type = INPUT_KEYBOARD;
-    ip.ki.wScan = 0;
-    ip.ki.time = 0;
-    ip.ki.dwExtraInfo = 0;
- 
-    ip.ki.wVk = 0x08; // bksp
+	ip.type = INPUT_KEYBOARD;
+	ip.ki.wScan = 0;
+	ip.ki.time = 0;
+	ip.ki.dwExtraInfo = 0;
 
-	for (unsigned int i = 0 ; i< lastEnteredWordLength; i++)
+	ip.ki.wVk = 0x08; // bksp
+
+	for (unsigned int i = 0; i < lastEnteredWordLength; i++)
 	{
 		ip.ki.dwFlags = 0;
 		SendInput(1, &ip, sizeof(INPUT));
-		ip.ki.dwFlags = KEYEVENTF_KEYUP; 
+		ip.ki.dwFlags = KEYEVENTF_KEYUP;
 		SendInput(1, &ip, sizeof(INPUT));
 	}
-	lastEnteredWordLength=1;
+	lastEnteredWordLength = 1;
 }
-
-//void changeScreenSize(int newWidth, int newHeight)
-//{
-//	int newSize = std::max(newWidth, newHeight);
-//	if (newSize == SCREEN_SIZE)
-//		return;
-//
-// 	int delta = newSize - SCREEN_SIZE;
-//	SCREEN_SIZE = newSize;
-//
-//	int oldWindowSize = glutGet(GLUT_WINDOW_WIDTH);
-//
-//	//glutReshapeWindow(oldWindowSize + delta, oldWindowSize + delta);
-//
-//	SetWindowPos(thisWindow, NULL, 0, 0, SCREEN_SIZE + 16, SCREEN_SIZE + 38, SWP_NOMOVE); 
-//	
-//	//glViewport( 0.f, 0.f, SCREEN_SIZE, SCREEN_SIZE);
-//	//glutPostRedisplay();
-//}
 
 #endif

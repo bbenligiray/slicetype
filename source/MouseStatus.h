@@ -11,12 +11,12 @@ class MouseStatus
 {
 	int loop;
 	int row;
-	void convertCartToPolar (int x, int y, double &angle, double &radius);
+	void convertCartToPolar(int x, int y, double &angle, double &radius);
 	void ConvertPolartoField(double angle, double radius, int &loop, int &row);
 public:
 	MouseStatus();
-	bool updateCell (int x, int y);
-	void getCell (int &outLoop, int &outRow);
+	bool updateCell(int x, int y);
+	void getCell(int &outLoop, int &outRow);
 };
 
 MouseStatus::MouseStatus()
@@ -25,7 +25,7 @@ MouseStatus::MouseStatus()
 	row = -1;
 }
 
-bool MouseStatus::updateCell (int x, int y)
+bool MouseStatus::updateCell(int x, int y)
 {
 	x = (x / (double)SCREEN_SIZE_X) * SCREEN_SIZE;
 	y = (y / (double)SCREEN_SIZE_Y) * SCREEN_SIZE;
@@ -44,7 +44,7 @@ bool MouseStatus::updateCell (int x, int y)
 	{
 		double angle = 0;
 		double radius = 0;
-		convertCartToPolar (x, y, angle, radius);
+		convertCartToPolar(x, y, angle, radius);
 		ConvertPolartoField(angle, radius, newLoop, newRow);
 	}
 
@@ -58,28 +58,19 @@ bool MouseStatus::updateCell (int x, int y)
 		return false;
 }
 
-void MouseStatus::getCell (int &outLoop, int &outRow)
+void MouseStatus::getCell(int &outLoop, int &outRow)
 {
 	outLoop = loop;
 	outRow = row;
 }
 
-void MouseStatus::convertCartToPolar (int x, int y, double &angle, double &radius)
+void MouseStatus::convertCartToPolar(int x, int y, double &angle, double &radius)
 {
-	
-
-
-	angle = -(atan2 (y - SCREEN_SIZE / 2, x - SCREEN_SIZE / 2) / M_PI) * 180;
+	angle = -(atan2(y - SCREEN_SIZE / 2, x - SCREEN_SIZE / 2) / M_PI) * 180;
 	if (angle < 0)
 		angle += 360;
 
-	radius = sqrt (pow (y - SCREEN_SIZE / 2, 2) + pow (x -  SCREEN_SIZE / 2, 2));
-
-	/*angle = -(atan2 (y - SCREEN_SIZE / 2, x - SCREEN_SIZE / 2) / M_PI) * 180;
-	if (angle < 0)
-		angle += 360;
-
-	radius = sqrt (pow (y - SCREEN_SIZE / 2, 2) + pow (x -  SCREEN_SIZE / 2, 2));*/
+	radius = sqrt(pow(y - SCREEN_SIZE / 2, 2) + pow(x - SCREEN_SIZE / 2, 2));
 }
 
 void MouseStatus::ConvertPolartoField(double angle, double radius, int &loop, int &row)
@@ -110,7 +101,7 @@ void MouseStatus::ConvertPolartoField(double angle, double radius, int &loop, in
 			row = 3;
 		return;
 	}
-	row = floor (angle / 30);
+	row = floor(angle / 30);
 }
 
 #endif

@@ -16,43 +16,43 @@ class ButtonSet
 	vector<Button> buttons;
 	PosChart positions;
 	void initPositions();
-	void mergeButtons ();
+	void mergeButtons();
 
 public:
-	ButtonSet ();
-	ButtonSet (vector<ValidChar> writings);
+	ButtonSet();
+	ButtonSet(vector<ValidChar> writings);
 	vector<Button>& getButtons();
-	bool getButtonWithField (int inpLoop, int inpRow, Button& but);
+	bool getButtonWithField(int inpLoop, int inpRow, Button& but);
 };
-ButtonSet::ButtonSet ()
+ButtonSet::ButtonSet()
 {}
-ButtonSet::ButtonSet (vector<ValidChar> writings)
+ButtonSet::ButtonSet(vector<ValidChar> writings)
 {
-	for (vector<ValidChar>::size_type i = 0; i != writings.size () ; i++)
-		buttons.push_back (Button (writings[i]));
-	initPositions ();
-	mergeButtons ();
+	for (vector<ValidChar>::size_type i = 0; i != writings.size(); i++)
+		buttons.push_back(Button(writings[i]));
+	initPositions();
+	mergeButtons();
 }
 
 //fills positions with the oriinal (non-merged) values
 void ButtonSet::initPositions()
 {
-	for (vector<Button>::size_type i = 0; i != buttons.size () ; i++)
-		positions.fillPos (buttons[i].getButtonShape ().getOrigLoop (), buttons[i].getButtonShape ().getOrigRow ());
+	for (vector<Button>::size_type i = 0; i != buttons.size(); i++)
+		positions.fillPos(buttons[i].getButtonShape().getOrigLoop(), buttons[i].getButtonShape().getOrigRow());
 }
 
 //ValidChars and Buttons will already be sorted wrt frequency
 //Simply merge them in order
-void ButtonSet::mergeButtons ()
+void ButtonSet::mergeButtons()
 {
-	 for (vector<Button>::size_type i = 0; i != buttons.size () ; i++)
-		 buttons[i].getButtonShape ().mergeRadially (positions);
-	 for (vector<Button>::size_type i = 0; i != buttons.size () ; i++)
-		 buttons[i].getButtonShape ().mergeLaterally (positions,firstPhase);
-	 for (vector<Button>::size_type i = 0; i != buttons.size () ; i++)
-		 buttons[i].getButtonShape ().mergeLaterally (positions,secondPhase);
-	 for (vector<Button>::size_type i = 0; i != buttons.size () ; i++)
-		 buttons[i].getButtonShape ().mergeLaterally (positions,thirdPhase);
+	for (vector<Button>::size_type i = 0; i != buttons.size(); i++)
+		buttons[i].getButtonShape().mergeRadially(positions);
+	for (vector<Button>::size_type i = 0; i != buttons.size(); i++)
+		buttons[i].getButtonShape().mergeLaterally(positions, firstPhase);
+	for (vector<Button>::size_type i = 0; i != buttons.size(); i++)
+		buttons[i].getButtonShape().mergeLaterally(positions, secondPhase);
+	for (vector<Button>::size_type i = 0; i != buttons.size(); i++)
+		buttons[i].getButtonShape().mergeLaterally(positions, thirdPhase);
 
 }
 vector<Button>& ButtonSet::getButtons()
@@ -60,7 +60,7 @@ vector<Button>& ButtonSet::getButtons()
 	return buttons;
 }
 
-bool ButtonSet::getButtonWithField (int inpLoop, int inpRow, Button& but)
+bool ButtonSet::getButtonWithField(int inpLoop, int inpRow, Button& but)
 {
 	for (vector<Button>::size_type i = 0; i < buttons.size(); i++)
 	{

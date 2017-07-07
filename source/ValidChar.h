@@ -6,54 +6,54 @@
 using std::string;
 
 //holds a char and its matching prediction
-class ValidChar 
+class ValidChar
 {
 	char character;
 	string prediction;
 	unsigned int freq;
 public:
-	ValidChar ();
-	ValidChar (char ch, string str, unsigned int fq);
-	const char ValidChar::getChar () const;
-	const string& getString () const;
-	const unsigned int getFreq () const;
-	void updatePred (string newPred, unsigned int newFreq);
-	string getPrediction ();
+	ValidChar();
+	ValidChar(char ch, string str, unsigned int fq);
+	const char ValidChar::getChar() const;
+	const string& getString() const;
+	const unsigned int getFreq() const;
+	void updatePred(string newPred, unsigned int newFreq);
+	string getPrediction();
 };
 
-ValidChar::ValidChar ()
+ValidChar::ValidChar()
 {
 	character = ' ';
 	prediction = "";
-	freq=0;
+	freq = 0;
 }
 
-ValidChar::ValidChar (char ch, string str, unsigned int fq)
+ValidChar::ValidChar(char ch, string str, unsigned int fq)
 {
 	character = ch;
 	prediction = str;
-	freq=fq;
+	freq = fq;
 }
 
-const char ValidChar::getChar () const
+const char ValidChar::getChar() const
 {
 	return character;
 }
-const string& ValidChar::getString () const
+const string& ValidChar::getString() const
 {
 	return prediction;
 }
-const unsigned int ValidChar::getFreq () const
+const unsigned int ValidChar::getFreq() const
 {
 	return freq;
 }
-void ValidChar::updatePred (string newPred, unsigned int newFreq)
+void ValidChar::updatePred(string newPred, unsigned int newFreq)
 {
 	prediction = newPred;
 	freq = newFreq;
 }
 
-string ValidChar::getPrediction ()
+string ValidChar::getPrediction()
 {
 	return prediction;
 }

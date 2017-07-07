@@ -5,23 +5,23 @@
 #include <sstream>
 //text addition
 
-int main( int argc, char* args[] )
-{	
-	
+int main(int argc, char* args[])
+{
+
 	string line;
-	ifstream myfile ("options.txt");
+	ifstream myfile("options.txt");
 	std::istringstream convert;
 	int number = 1000;
 	if (myfile.is_open())
 	{
-		getline (myfile,line);
-		getline (myfile,line);
+		getline(myfile, line);
+		getline(myfile, line);
 		convert = std::istringstream(line);
 		convert >> number;
 		selectTime = (float)number / 1000;
 
-		getline (myfile,line);
-		getline (myfile,line);
+		getline(myfile, line);
+		getline(myfile, line);
 		convert = std::istringstream(line);
 		convert >> number;
 		morphTime = (float)number / 1000;
@@ -36,46 +36,46 @@ int main( int argc, char* args[] )
 		return 1;
 
 	glutInit(&argc, args);
-	initGL ();
+	initGL();
 
 	//Set functions
-	glutDisplayFunc (render);
-	glutPassiveMotionFunc (handleMousePos);
-	glutMouseFunc (handleMouseClick);
-	glutKeyboardFunc (handleKeys);
+	glutDisplayFunc(render);
+	glutPassiveMotionFunc(handleMousePos);
+	glutMouseFunc(handleMouseClick);
+	glutKeyboardFunc(handleKeys);
 
 	//Set loop
-	glutTimerFunc (1000 / SCREEN_FPS, runMainLoop, 0);
-	glutMainLoop ();
+	glutTimerFunc(1000 / SCREEN_FPS, runMainLoop, 0);
+	glutMainLoop();
 
 
 
 	return 0;
 }
 
-void runMainLoop (int val)
+void runMainLoop(int val)
 {
 	render();
 
-	glutTimerFunc (1000 / SCREEN_FPS, runMainLoop, val);
+	glutTimerFunc(1000 / SCREEN_FPS, runMainLoop, val);
 }
 
 
 
-void render ()
+void render()
 {
 
-	kbMain.tickCounter ();
+	kbMain.tickCounter();
 	kbMain.TEMPDRAW();
 	glutSwapBuffers();
 }
 
-void handleMousePos (int x, int y)
+void handleMousePos(int x, int y)
 {
-	kbMain.updateMouseCell (x, y);
+	kbMain.updateMouseCell(x, y);
 }
 
-void handleMouseClick (int button, int state, int x, int y)
+void handleMouseClick(int button, int state, int x, int y)
 {
 	switch (button)
 	{
@@ -99,7 +99,7 @@ void handleMouseClick (int button, int state, int x, int y)
 	}
 }
 
-void handleKeys (unsigned char key, int x, int y)
+void handleKeys(unsigned char key, int x, int y)
 {
 	cout << key << endl;
 }

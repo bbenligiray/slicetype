@@ -5,7 +5,7 @@
 #include "enums.h"
 
 //Holds the geometric aspects of a button
-class DiskPart 
+class DiskPart
 {
 	//Both innerRing and outerRing can take values [0,4]
 	//0 is the middle point, 1-2-3 are the next outer rings, 4 is the ring outside the screen
@@ -20,26 +20,26 @@ class DiskPart
 	int loop, row;
 
 public:
-	DiskPart ();
-	DiskPart (int inpLoop, int inpRow);
-	int getOrigLoop () const;
-	int getOrigRow () const;
-	void mergeRadially (PosChart &positions);
-	void mergeLaterally (PosChart &positions, lateralMergePhases ph);
-	void getShape (int &loopStart, int &loopEnd, int &rowStart, int &rowEnd);
-	bool isInDisk (int inpLoop, int inpRow);
+	DiskPart();
+	DiskPart(int inpLoop, int inpRow);
+	int getOrigLoop() const;
+	int getOrigRow() const;
+	void mergeRadially(PosChart &positions);
+	void mergeLaterally(PosChart &positions, lateralMergePhases ph);
+	void getShape(int &loopStart, int &loopEnd, int &rowStart, int &rowEnd);
+	bool isInDisk(int inpLoop, int inpRow);
 };
 
-DiskPart::DiskPart ()
+DiskPart::DiskPart()
 {
 }
-DiskPart::DiskPart (int inpLoop, int inpRow)
+DiskPart::DiskPart(int inpLoop, int inpRow)
 {
 	loop = inpLoop;
 	row = inpRow;
 
 	innerRing = loop;
-	outerRing = loop+1;
+	outerRing = loop + 1;
 
 	if (loop == 0)
 	{
@@ -58,18 +58,18 @@ DiskPart::DiskPart (int inpLoop, int inpRow)
 	}
 }
 
-int DiskPart::getOrigLoop () const
+int DiskPart::getOrigLoop() const
 {
 	return loop;
 }
-int DiskPart::getOrigRow () const
+int DiskPart::getOrigRow() const
 {
 	return row;
 }
 
 
 //This is the merge that will happen first.
-void DiskPart::mergeRadially (PosChart &positions)
+void DiskPart::mergeRadially(PosChart &positions)
 {
 	switch (loop)
 	{
@@ -77,16 +77,16 @@ void DiskPart::mergeRadially (PosChart &positions)
 		//middle loop cannot merge radially
 		break;
 	case 1:
-		if (positions.getLoop (2)[row]==0)
+		if (positions.getLoop(2)[row] == 0)
 		{
-			positions.fillPos (2, row);
+			positions.fillPos(2, row);
 			outerRing = 3;
 		}
 		break;
 	case 2:
-		if (positions.getLoop (1)[row]==0)
+		if (positions.getLoop(1)[row] == 0)
 		{
-			positions.fillPos (1, row);
+			positions.fillPos(1, row);
 			innerRing = 1;
 		}
 		break;
@@ -97,7 +97,7 @@ void DiskPart::mergeRadially (PosChart &positions)
 //First phase merges non-radially-merged buttons (ccw).
 //Second phase merges radially-merged buttons (ccw).
 //Third phase merges any remaining empty spaces (cw).
-void DiskPart::mergeLaterally (PosChart &positions, lateralMergePhases ph)
+void DiskPart::mergeLaterally(PosChart &positions, lateralMergePhases ph)
 {
 	switch (ph)
 	{
@@ -109,18 +109,18 @@ void DiskPart::mergeLaterally (PosChart &positions, lateralMergePhases ph)
 			if (loop == 0)
 			{
 				//the first loop has only two buttons
-				if  (positions.getLoop (loop)[(row + 1) % 2] == 0)
+				if (positions.getLoop(loop)[(row + 1) % 2] == 0)
 				{
-					positions.fillPos (loop, (row + 1) % 2);
+					positions.fillPos(loop, (row + 1) % 2);
 					startSlice = stopSlice = 0;
 				}
 			}
 			else
 			{
 				//other loops have 12 buttons
-				if  (positions.getLoop (loop)[(row + 1) % 12] == 0)
+				if (positions.getLoop(loop)[(row + 1) % 12] == 0)
 				{
-					positions.fillPos (loop, (row + 1) % 12);
+					positions.fillPos(loop, (row + 1) % 12);
 					stopSlice = (row + 2) % 12;
 				}
 			}
@@ -133,12 +133,12 @@ void DiskPart::mergeLaterally (PosChart &positions, lateralMergePhases ph)
 		if (outerRing - innerRing == 2)
 		{
 			//check if both nearby positions are available
-			if  ((positions.getLoop (1)[(row + 1) % 12] == 0) && (positions.getLoop (2)[(row + 1) % 12] == 0))
-				{
-					positions.fillPos (1, (row + 1) % 12);
-					positions.fillPos (2, (row + 1) % 12);
-					stopSlice = (row + 2) % 12;
-				}
+			if ((positions.getLoop(1)[(row + 1) % 12] == 0) && (positions.getLoop(2)[(row + 1) % 12] == 0))
+			{
+				positions.fillPos(1, (row + 1) % 12);
+				positions.fillPos(2, (row + 1) % 12);
+				stopSlice = (row + 2) % 12;
+			}
 		}
 		break;
 
@@ -149,27 +149,27 @@ void DiskPart::mergeLaterally (PosChart &positions, lateralMergePhases ph)
 			//don't need to merge middle again
 			if (loop != 0)
 			{
-				if  (positions.getLoop (loop)[(row + 11) % 12] == 0)
+				if (positions.getLoop(loop)[(row + 11) % 12] == 0)
 				{
-					positions.fillPos (loop, (row + 11) % 12);
+					positions.fillPos(loop, (row + 11) % 12);
 					startSlice = (row + 11) % 12;
 				}
 			}
 		}
 		else if (outerRing - innerRing == 2)
 		{
-			if  ((positions.getLoop (1)[(row + 11) % 12] == 0) && (positions.getLoop (2)[(row + 11) % 12] == 0))
-				{
-					positions.fillPos (1, (row + 11) % 12);
-					positions.fillPos (2, (row + 11) % 12);
-					startSlice = (row + 11) % 12;
-				}
+			if ((positions.getLoop(1)[(row + 11) % 12] == 0) && (positions.getLoop(2)[(row + 11) % 12] == 0))
+			{
+				positions.fillPos(1, (row + 11) % 12);
+				positions.fillPos(2, (row + 11) % 12);
+				startSlice = (row + 11) % 12;
+			}
 		}
 		break;
 	}
 }
 
-void DiskPart::getShape (int &loopStart, int &loopEnd, int &rowStart, int &rowEnd)
+void DiskPart::getShape(int &loopStart, int &loopEnd, int &rowStart, int &rowEnd)
 {
 	loopStart = innerRing;
 	loopEnd = outerRing;
@@ -177,7 +177,7 @@ void DiskPart::getShape (int &loopStart, int &loopEnd, int &rowStart, int &rowEn
 	rowEnd = stopSlice;
 }
 
-bool DiskPart::isInDisk (int inpLoop, int inpRow)
+bool DiskPart::isInDisk(int inpLoop, int inpRow)
 {
 	switch (inpLoop)
 	{
