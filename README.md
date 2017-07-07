@@ -6,8 +6,8 @@ The soft keyboard designed for gaze typing proposed in the following paper:
 
 The .zip file contains the soft keyboard built for Windows.
 I also uploaded the source code to refer to it myself.
-I don't provide a makefile at the moment, but it only needs freeglut.
-It uses Win32 API, so I do not recommend trying to build it for another platform.
+I don't provide a makefile at the moment, but it only needs freeglut to build.
+It uses Win32 API, so it will take some work to port.
 
 #### What is this?
 
