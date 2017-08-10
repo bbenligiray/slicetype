@@ -22,10 +22,11 @@ It uses Win32 API, so it will take some work to port.
   <img src="https://user-images.githubusercontent.com/19530665/27763730-ee36c938-5e91-11e7-885a-fe518de4ec5d.png"/>
 </p>
 
-<p align="center">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/3IM0-utYrDg?ecver=1" frameborder="0" allowfullscreen></iframe>
+#### Videos
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/um75h3hHcwo?ecver=1" frameborder="0" allowfullscreen></iframe>
+[SliceType: Fast Gaze Typing with a Merging Keyboard](https://www.youtube.com/watch?v=3IM0-utYrDg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/WlAcx398p-A?ecver=1" frameborder="0" allowfullscreen></iframe>
-</p>
+[SliceType - Advanced User Performance](https://www.youtube.com/watch?v=um75h3hHcwo)
+
+[Slicetype - Gaze Typing Example (Turkish)](https://www.youtube.com/watch?v=WlAcx398p-A)
+
