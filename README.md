@@ -2,7 +2,7 @@
 
 The soft keyboard designed for gaze typing proposed in the following paper:
 
-[Topal, C.; Benligiray, B.; Akinlar, C., "SliceType: Fast gaze typing with a merging keyboard," Under review, 2017.](https://arxiv.org/abs/1706.02499)
+[Benligiray, B.; Topal, C.; Akinlar, C., "SliceType: Fast gaze typing with a merging keyboard," Under review, 2017.](https://arxiv.org/abs/1706.02499)
 
 The .zip file contains the soft keyboard built for Windows.
 I also uploaded the source code to refer to it myself.
